@@ -48,15 +48,24 @@ def main():
 
     glTranslatef(0.0,0.0, -5)
 
+    cube1Angle = 0
+    cube2Angle = 1000
+
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 quit()
 
-        glRotatef(1, 10, 1, 1)
+        glRotatef(1, cube1Angle, 1, 1)
         glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT)
         Cube()
+        glRotatef(1,cube2Angle-cube1Angle,1,1)
+        glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT)
+        Cube()
+        glRotatef(1,-cube2Angle,1,1)
+        cube1Angle += 1
+        cube2Angle += 1
         pygame.display.flip()
         pygame.time.wait(1)
 
