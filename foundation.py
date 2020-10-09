@@ -1,7 +1,18 @@
 
+class mesh():
+
+    def __init__(self, verticies = (), edges = (), faces = ()):
+        self.verticies = verticies
+        self.edges = edges
+        self.faces = faces
+
+    def getMesh(self):
+        return (self.verticiesm self.edges, self.faces)
+
+
 
 class entity() :
-    def __init__(self, name = "", Type = "", hp = 1, ad = 0, price = 0, inventory = {}, px = 0, py = 0, wx = 0, wy = 0, owners = {}, password = 0, level = 0, entityData = {}):
+    def __init__(self, name = "", Type = "", hp = 1, ad = 0, price = 0, inventory = {}, px = 0, py = 0, pz = 0, mesh = mesh(), owners = {}, password = 0, level = 0, entityData = {}):
         self.name = name
         self.type = Type
         self.hp = hp
