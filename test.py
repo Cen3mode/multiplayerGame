@@ -1,20 +1,35 @@
-from OpenGL.GL import *
-from OpenGL.GLUT import *
-from OpenGL.GLU import *
+from ursina import *
+from ursina.prefabs.first_person_controller import FirstPersonController
 
-window = 0
-res = (500, 400)
 
-def draw():
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
-  glLoadIdentity()
-  glutSwapBuffers()
+app = Ursina()
 
-glutInit()
-glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_ALPHA | GLUT_DEPTH)
-glutInitWindowSize(res[0], res[1])
-glutInitWindowPosition(0,0)
-window = glutCreateWindow("multiplayerGameOpenGLTest")
-glutDisplayFunc(draw)
-glutIdleFunc(draw)
-glutMainLoop()
+class Voxel(Button):
+    def __init__(self, position=(0,0,0)):
+        super().__init__(
+            parent = scene,
+            position = position,
+            model = 'cube',
+            origin_y = .5,
+            texture = 'white_cube',
+            color = color.color(0, 0, random.uniform(.9, 1.0)),
+            highlight_color = color.lime,
+        )
+
+
+    def input(self, key):
+        if self.hovered:
+            if key == 'left mouse down':
+                voxel = Voxel(position=self.position + mouse.normal)
+
+            if key == 'right mouse down':
+                destroy(self)
+
+
+for z in range(8):
+    for x in range(8):
+        voxel = Voxel(position=(x,0,z))
+
+
+player = FirstPersonController()
+app.run()

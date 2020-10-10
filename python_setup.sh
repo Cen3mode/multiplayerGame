@@ -2,7 +2,7 @@ sudo apt update -y;
 sudo apt upgrade -y;
 sudo apt install python3 -y;
 sudo apt install python3-pip python3-pygame -y;
-pip3 install PyOpenGL PyOpenGL_accelerate;
+pip3 install ursina, psd-tools;
 sudo apt install ubuntu-desktop mesa-utils -y;
 wget -qO - https://download.sublimetext.com/sublimehq-pub.gpg | sudo apt-key add -;
 sudo apt-get install apt-transport-https;
