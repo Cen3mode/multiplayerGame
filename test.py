@@ -1,35 +1,88 @@
-from ursina import *
-from ursina.prefabs.first_person_controller import FirstPersonController
+#!/usr/bin/env python3
+import tcod
+
+class Action:
+    pass
 
 
-app = Ursina()
-
-class Voxel(Button):
-    def __init__(self, position=(0,0,0)):
-        super().__init__(
-            parent = scene,
-            position = position,
-            model = 'cube',
-            origin_y = .5,
-            texture = 'white_cube',
-            color = color.color(0, 0, random.uniform(.9, 1.0)),
-            highlight_color = color.lime,
-        )
+class EscapeAction(Action):
+    pass
 
 
-    def input(self, key):
-        if self.hovered:
-            if key == 'left mouse down':
-                voxel = Voxel(position=self.position + mouse.normal)
+class MovementAction(Action):
+    def __init__(self, dx: int, dy: int):
+        super().__init__()
 
-            if key == 'right mouse down':
-                destroy(self)
+        self.dx = dx
+        self.dy = dy
+
+from typing import Optional
+
+import tcod.event
+
+class EventHandler(tcod.event.EventDispatch[Action]):
+    def ev_quit(self, event: tcod.event.Quit) -> Optional[Action]:
+        raise SystemExit()
+
+    def ev_keydown(self, event: tcod.event.KeyDown) -> Optional[Action]:
+        action: Optional[Action] = None
+
+        key = event.sym
+
+        if key == tcod.event.K_UP:
+            action = MovementAction(dx=0, dy=-1)
+        elif key == tcod.event.K_DOWN:
+            action = MovementAction(dx=0, dy=1)
+        elif key == tcod.event.K_LEFT:
+            action = MovementAction(dx=-1, dy=0)
+        elif key == tcod.event.K_RIGHT:
+            action = MovementAction(dx=1, dy=0)
+
+        elif key == tcod.event.K_ESCAPE:
+            action = EscapeAction()
+
+        # No valid key was pressed
+        return action
+
+def main() -> None:
+    screen_width = 80
+    screen_height = 50
+
+    player_x = int(screen_width / 2)
+    player_y = int(screen_height / 2)
+
+    tileset = tcod.tileset.load_tilesheet(
+        "dejavu10x10_gs_tc.png", 32, 8, tcod.tileset.CHARMAP_TCOD
+    )
+
+    event_handler = EventHandler()
+
+    with tcod.context.new_terminal(
+        screen_width,
+        screen_height,
+        tileset=tileset,
+        title="Yet Another Roguelike Tutorial",
+        vsync=True,
+    ) as context:
+        root_console = tcod.Console(screen_width, screen_height, order="F")
+        while True:
+            root_console.print(x=player_x, y=player_y, string="@")
+            
+            context.present(root_console)
+            root_console.clear()
+            for event in tcod.event.wait():
+                action = event_handler.dispatch(event)
+                
+                if action is None:
+                    continue
+
+                if isinstance(action, MovementAction):
+                    player_x += action.dx
+                    player_y += action.dy
+
+                elif isinstance(action, EscapeAction):
+                    raise SystemExit()
 
 
-for z in range(8):
-    for x in range(8):
-        voxel = Voxel(position=(x,0,z))
-
-
-player = FirstPersonController()
-app.run()
+if __name__ == "__main__":
+    main()
