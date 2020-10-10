@@ -1,48 +1,7 @@
-#!/usr/bin/env python3
+    #!/usr/bin/env python3
 import tcod
-
-class Action:
-    pass
-
-
-class EscapeAction(Action):
-    pass
-
-
-class MovementAction(Action):
-    def __init__(self, dx: int, dy: int):
-        super().__init__()
-
-        self.dx = dx
-        self.dy = dy
-
-from typing import Optional
-
-import tcod.event
-
-class EventHandler(tcod.event.EventDispatch[Action]):
-    def ev_quit(self, event: tcod.event.Quit) -> Optional[Action]:
-        raise SystemExit()
-
-    def ev_keydown(self, event: tcod.event.KeyDown) -> Optional[Action]:
-        action: Optional[Action] = None
-
-        key = event.sym
-
-        if key == tcod.event.K_UP:
-            action = MovementAction(dx=0, dy=-1)
-        elif key == tcod.event.K_DOWN:
-            action = MovementAction(dx=0, dy=1)
-        elif key == tcod.event.K_LEFT:
-            action = MovementAction(dx=-1, dy=0)
-        elif key == tcod.event.K_RIGHT:
-            action = MovementAction(dx=1, dy=0)
-
-        elif key == tcod.event.K_ESCAPE:
-            action = EscapeAction()
-
-        # No valid key was pressed
-        return action
+from actions import *
+from action_handlers import *
 
 def main() -> None:
     screen_width = 80
