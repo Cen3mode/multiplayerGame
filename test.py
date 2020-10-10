@@ -1,80 +1,20 @@
-import os
-
-try:
-    os.environ["DISPLAY"]
-except:
-    os.environ["SDL_VIDEODRIVER"] = "fbcon"
-
-import pygame
-from pygame.locals import *
-
 from OpenGL.GL import *
+from OpenGL.GLUT import *
 from OpenGL.GLU import *
 
-verticies = (
-    (1, -1, -1),
-    (1, 1, -1),
-    (-1, 1, -1),
-    (-1, -1, -1),
-    (1, -1, 1),
-    (1, 1, 1),
-    (-1, -1, 1),
-    (-1, 1, 1)
-    )
+window = 0
+res = (500, 400)
 
-edges = (
-    (0,1),
-    (0,3),
-    (0,4),
-    (2,1),
-    (2,3),
-    (2,7),
-    (6,3),
-    (6,4),
-    (6,7),
-    (5,1),
-    (5,4),
-    (5,7)
-    )
+def draw():
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+  glLoadIdentity()
+  glutSwapBuffers()
 
-
-def Cube():
-    glBegin(GL_LINES)
-    for edge in edges:
-        for vertex in edge:
-            glVertex3fv(verticies[vertex])
-    glEnd()
-
-
-def main():
-    pygame.init()
-    display = (1440,980)
-    pygame.display.set_mode(display, DOUBLEBUF|OPENGL)
-
-    gluPerspective(45, (display[0]/display[1]), 0.1, 50.0)
-
-    glTranslatef(0.0,0.0, -5)
-
-    cube1Angle = 0
-    cube2Angle = 1000
-
-    while True:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                quit()
-
-        glRotatef(1, cube1Angle, 1, 1)
-        glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT)
-        Cube()
-        glRotatef(1,cube2Angle-cube1Angle,1,1)
-        glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT)
-        Cube()
-        glRotatef(1,-cube2Angle,1,1)
-        cube1Angle += 1
-        cube2Angle += 1
-        pygame.display.flip()
-        pygame.time.wait(1)
-
-
-main()
+glutInit()
+glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_ALPHA | GLUT_DEPTH)
+glutInitWindowSize(res[0], res[1])
+glutInitWindowPosition(0,0)
+window = glutCreateWindow("multiplayerGameOpenGLTest")
+glutDisplayFunc(draw)
+glutIdleFunc(draw)
+glutMainLoop()
